@@ -15,21 +15,16 @@ public class TestBoilerplate {
 	
 	Logger logger = Logger.getLogger(TestBoilerplate.class.getName());
 	
-	private List<URL> testUrls; 
+	private List<String> testUrls; 
 	
 	@Before
 	public void before() throws MalformedURLException {
-		testUrls = new ArrayList<URL>(); 
-		
-		// testUrls.add(new URL("http://watson.ch"));
-		// testUrls.add(new URL("http://srf.ch"));
-		// testUrls.add(new URL("http://blick.ch"));
-		// testUrls.add(new URL("http://bote.ch"));
-		// testUrls.add(new URL("http://diepresse.com"));
-		
-		
-		// getting an article in watson, the next article follows immediately after. check if watson can handle this
-		testUrls.add(new URL("http://www.watson.ch/International/Syrien/774288644-5-Jahre-Krieg-in-Syrien--Die-Folgen-in-9-ersch%C3%BCtternden-Zahlen"));
+		testUrls = new ArrayList<String>(); 
+		testUrls.add("http://watson.ch");
+		testUrls.add("http://srf.ch");
+		testUrls.add("http://blick.ch");
+		testUrls.add("http://bote.ch");
+		testUrls.add("http://diepresse.com");
 	}
 	
 	
@@ -41,10 +36,41 @@ public class TestBoilerplate {
 	 */
 	@Test
 	public void testBoilerPipe() throws MalformedURLException, BoilerpipeProcessingException {
-		
-		for(URL url: testUrls) {
-			logger.info("**** Testing URL: "+url+"***");
-			System.out.println(ArticleExtractor.INSTANCE.getText(url));
+		for(String url: testUrls) {
+			printBoilerpipeTextExtraction(url);
 		}
-	}	
+	}		
+	
+	
+	@Test
+	public void testWatsonSingleArticle() {
+		// print front page
+		printBoilerpipeTextExtraction("http://www.watson.ch");
+		
+		// print single article
+		printBoilerpipeTextExtraction("http://www.watson.ch/International/Syrien/774288644-5-Jahre-Krieg-in-Syrien--Die-Folgen-in-9-ersch%C3%BCtternden-Zahlen");
+	}
+	
+	@Test 
+	public void testSrfSingle() {
+		String articleSingle = "http://www.srf.ch/news/schweiz/vier-maenner-aus-der-schweiz-in-den-personalunterlagen-des-is";
+		printBoilerpipeTextExtraction(articleSingle);
+	}
+	
+	
+	public void printBoilerpipeTextExtraction(String url) {
+		logger.info("Testing URL: "+url);
+		try {
+			System.out.println(ArticleExtractor.INSTANCE.getText(new URL(url)));
+		} catch (BoilerpipeProcessingException e) {
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	
+	
 }
